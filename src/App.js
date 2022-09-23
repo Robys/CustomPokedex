@@ -1,23 +1,45 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect,useState } from 'react';
+import axios from 'axios'
+import Pokemon from './Components/Pokemon';
 
 function App() {
+  const [data,SetData] = useState()
+  const [index,SetIndex] = useState(0)
+
+  useEffect(()=>{
+    async function GetAllPokemons(){
+      await axios("https://pokeapi.co/api/v2/pokemon?limit=151")
+      .then(res => SetData(res.data.results))
+    }
+
+    GetAllPokemons()
+    
+
+  },[])
+
+  const AddToIndex = () =>{
+    if(index !== data.lenght)
+      SetIndex(index+1)
+  }
+
+  const SubToIndex = () =>{
+    if(index > 0)
+      SetIndex(index-1)
+  }
+
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <ul>
+
+      {data ? <Pokemon address={data[index].url}/> : ""}
+
+      <button onClick={AddToIndex}>Prox</button>
+
+      <button onClick={SubToIndex}>Prev</button>
+
+      </ul>
+
     </div>
   );
 }
